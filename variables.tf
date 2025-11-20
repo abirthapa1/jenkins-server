@@ -9,3 +9,9 @@ variable "volume_size" {
   type        = number
   default     = 50
 }
+
+variable "ssh_public_key" {
+  description = "pub key"
+  type        = string
+  default     = "~/.ssh/id_ed25519.pub"
+}

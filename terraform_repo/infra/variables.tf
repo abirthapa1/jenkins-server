@@ -28,8 +28,8 @@ variable "root_block_device" {
   type        = map(string)
 }
 
-variable "ssh_public_key" {
-  description = "public key for ssh"
+variable "key_name" {
+  description = "Name of the SSH key pair"
   type        = string
-  default     = "~/.ssh/id_ed25519.pub"
+  # default     = "~/.ssh/id_ed25519.pub"
 }

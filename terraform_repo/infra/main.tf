@@ -8,13 +8,13 @@ module "ec2_instance" {
 
   associate_public_ip_address = true
   vpc_security_group_ids      = var.security_group
-  key_name                    = aws_key_pair.aws-key.key_name
+  key_name                    = var.key_name
   root_block_device           = var.root_block_device
 
   subnet_id = var.subnet_id
 }
 
-resource "aws_key_pair" "aws-key" {
-  key_name   = "jenkins"
-  public_key = file(var.ssh_public_key)
-}
+# resource "aws_key_pair" "aws-key" {
+#   key_name   = "jenkins"
+#   public_key = file(var.ssh_public_key)
+# }

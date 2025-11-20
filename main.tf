@@ -66,15 +66,16 @@ module "network_sg" {
 module "infra_ec2" {
   source = "./terraform_repo/infra"
 
-  # for_each = toset(["master-node", "java-node", "python-node"])
+  for_each = toset(["master-node", "java-node", "python-node"])
 
-  # jenkins_main_name = "jenkins-${each.key}"
+  jenkins_main_name = "jenkins-${each.key}"
 
-  jenkins_main_name = "jenkins-master"
+  #jenkins_main_name = "jenkins-master"
   instance_type     = "t3.micro"
   ami_ssm_parameter = "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64"
 
   security_group = [module.network_sg.sg_id]
+  key_name       = aws_key_pair.aws-key.key_name
   subnet_id      = module.network_vpc.public_subnets[0]
 
   root_block_device = {
@@ -82,4 +83,9 @@ module "infra_ec2" {
     volume_type = "gp3"
   }
 
+}
+
+resource "aws_key_pair" "aws-key" {
+  key_name   = "jenkins"
+  public_key = file(var.ssh_public_key)
 }
