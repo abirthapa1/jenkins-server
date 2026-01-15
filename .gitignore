@@ -1,8 +1,19 @@
 ### Ansible
-playbooks
+playbooks/roles/java
+playbooks/roles/python
+playbooks/ansible.cfg
+
 ### Terraform
 .terraform
 terraform.tfstate
 terraform.tfstate.backup
 .terraform.lock.hcl
 backend.tf
+
+### Docker
+Dockerfile
+docker-compose.yml
+
+### MISC
+.vscode
+jenkins.sh

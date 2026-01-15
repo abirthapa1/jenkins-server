@@ -39,8 +39,31 @@ module "network_sg" {
   sg_name = "jenkins-server-sg"
   vpc_id  = module.network_vpc.vpc_id
 
+  ingress_cidr_blocks      = ["0.0.0.0/0"]
+  ingress_rules            = ["http-80-tcp", "ssh-tcp"]
+  ingress_with_cidr_blocks = []
+
+  egress_with_cidr_blocks = [{
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = "0.0.0.0/0"
+  }]
+
+  sg_tags = {
+    Environment = "dev"
+    Name        = "jenkins-server-sg"
+  }
+}
+
+module "master_sg" {
+  source = "./terraform_repo/network/security_group"
+
+  sg_name = "jenkins-master-sg"
+  vpc_id  = module.network_vpc.vpc_id
+
   ingress_cidr_blocks = ["0.0.0.0/0"]
-  ingress_rules       = ["http-80-tcp", "ssh-tcp"]
+  ingress_rules       = []
   ingress_with_cidr_blocks = [{
     from_port   = 8080
     to_port     = 8080
@@ -58,7 +81,7 @@ module "network_sg" {
 
   sg_tags = {
     Environment = "dev"
-    Name        = "jenkins-server-sg"
+    Name        = "jenkins-master-sg"
   }
 }
 
@@ -74,13 +97,15 @@ module "infra_ec2" {
   instance_type     = "t3.micro"
   ami_ssm_parameter = "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64"
 
-  security_group = [module.network_sg.sg_id]
+  ### Adding the master security group only to the master node
+  ### so that we can access the jenkins website on port 8080
+  security_group = concat([module.network_sg.sg_id], (each.key == "master-node" ? [module.master_sg.sg_id] : []))
   key_name       = aws_key_pair.aws-key.key_name
   subnet_id      = module.network_vpc.public_subnets[0]
 
   root_block_device = {
-    volume_size = var.volume_size
-    volume_type = "gp3"
+    size = var.volume_size
+    type = "gp3"
   }
 
 }
