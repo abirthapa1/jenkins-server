@@ -1,0 +1,40 @@
+---
+# Main playbook for Jenkins infrastructure setup
+### Jenkins Master node
+- name: Configure Jenkins Master Node
+  hosts: master_node
+  remote_user: ec2-user
+  become: true
+  # vars:
+  #   jenkins_admin_username: admin
+  #   jenkins_admin_password: "{{ vault_jenkins_admin_password | default('ChangeMe123!') }}"
+  #   jenkins_http_port: 8080
+
+  roles:
+    - role: jenkins
+      tags: ["jenkins"]
+
+### Java Agent
+- name: Configure Java Agent Node
+  hosts: java_node
+  remote_user: ec2-user
+  become: true
+  vars:
+    java_version: "21"
+  # vars_files:
+  #   - vars/gradle.yaml
+  roles:
+    - role: java
+      tags: ["java", "agent"]
+
+###Python agent
+- name: Configure Python Agent Node
+  hosts: python_node
+  remote_user: ec2-user
+  become: true
+  # vars:
+  #   python_version: "3.11"
+
+  roles:
+    - role: python
+      tags: ["python", "agent"]

@@ -1,0 +1,42 @@
+---
+#yt-> https://www.youtube.com/watch?v=vrsV-1qt2F8
+#jenkins docs-> https://www.jenkins.io/doc/tutorials/tutorial-for-installing-jenkins-on-AWS/
+
+- name: Prerequiste checks
+  ansible.builtin.include_tasks: prerequisites.yaml
+
+- name: Adding jenkins repo
+  #similar to wget
+  get_url:
+    url: https://pkg.jenkins.io/redhat-stable/jenkins.repo
+    dest: /etc/yum.repos.d/jenkins.repo
+  tags: ["jenkins"]
+
+- name: Import a key file from Jenkins-CI
+  ansible.builtin.rpm_key:
+    state: present
+    key: https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+
+- name: Update the packages
+  package:
+    update_cache: yes
+
+- name: Installing jenkins
+  package:
+    name: jenkins
+    state: present
+
+- name: Start jenkins
+  ansible.builtin.systemd_service:
+    enabled: yes
+    name: jenkins
+    state: started
+
+- name: Read Jenkins initial admin password
+  ansible.builtin.slurp:
+    src: /var/lib/jenkins/secrets/initialAdminPassword
+  register: jenkins_admin_password
+
+- name: Show Jenkins initial admin password
+  ansible.builtin.debug:
+    msg: "{{ jenkins_admin_password.content | b64decode | trim}}"

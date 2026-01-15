@@ -1,0 +1,35 @@
+---
+- name: Updating packages
+  package:
+    update_cache: yes
+  tags: ["jenkins", "prerequisites"]
+
+- name: Gather package facts
+  ansible.builtin.package_facts:
+    manager: auto
+
+#shows the package as a list
+- name: Show all package facts to find Java
+  ansible.builtin.debug:
+    var: ansible_facts.packages.keys() | list | select('match', '.*java.*|.*jdk.*|.*corretto.*') | list
+
+#Have the ouput stored in java_packages for reusage
+- name: Collect installed Java-related packages
+  set_fact:
+    java_packages: >-
+      {{ ansible_facts.packages.keys()
+         | select('match', '.*java.*|.*jdk.*|.*corretto.*')
+         | list }}
+
+- name: Install Java if not present
+  ansible.builtin.package:
+    name: java-21-amazon-corretto
+    state: present
+
+  #java_packages | length == 0 → true only if no Java-related packages are installed
+  when: java_packages | length == 0
+
+- name: Verify Java is installed
+  ansible.builtin.debug:
+    msg: "Java has been installed!"
+  when: java_packages | length == 0
