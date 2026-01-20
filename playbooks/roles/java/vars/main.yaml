@@ -1,0 +1,7 @@
+### Can change your versions and java home path
+### according to your needs. Also can add more variables
+### in here
+
+gradle_version: "9.2.1"
+
+java_home_path: "/usr/lib/jvm/java-21-amazon-corretto"

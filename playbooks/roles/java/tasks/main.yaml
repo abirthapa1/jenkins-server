@@ -1,0 +1,132 @@
+---
+# playbooks/roles/java/tasks/main.yml
+# - name: Include OS-specific variables
+#   include_vars: "{{ ansible_os_family }}.yml"
+#   tags: ["java"]
+
+- name: Update package cache
+  package:
+    update_cache: yes
+  tags: ["java"]
+
+- name: Install Java
+  package:
+    name: java-21-amazon-corretto
+    state: present
+  tags: ["java"]
+
+# - name: Set default Java version
+#   alternatives:
+#     name: java
+#     path: "{{ java_default_path }}"
+#   when: java_default_path is defined
+#   tags: ["java", "configure"]
+
+- name: Install Maven
+  package:
+    name: maven
+    state: present
+  tags: ["java", "maven"]
+
+- name: Install Gradle
+  block:
+    - name: Download Gradle
+      get_url:
+        url: "https://services.gradle.org/distributions/gradle-{{ gradle_version }}-all.zip"
+        dest: /tmp/gradle.zip
+        mode: "0644"
+
+    - name: Create Gradle directory
+      file:
+        path: /opt/gradle
+        state: directory
+        mode: "0755"
+
+    - name: Extract Gradle
+      unarchive:
+        src: /tmp/gradle.zip
+        dest: /opt/gradle
+        remote_src: yes
+        creates: "/opt/gradle/gradle-{{ gradle_version }}"
+
+    # - name: Create Gradle symlink
+    #   file:
+    #     src: "/opt/gradle/gradle-{{ gradle_version }}"
+    #     dest: /opt/gradle/latest
+    #     state: link
+
+    - name: Add Gradle to PATH
+      copy:
+        dest: /etc/profile.d/gradle.sh
+        content: |
+          export GRADLE_HOME=/opt/gradle/latest
+          export PATH=$GRADLE_HOME/bin:$PATH
+        mode: "0644"
+  tags: ["java", "gradle"]
+
+- name: Set JAVA_HOME environment variable
+  copy:
+    dest: /etc/profile.d/java.sh
+    content: |
+      export JAVA_HOME={{ java_home_path }}
+      export PATH=$JAVA_HOME/bin:$PATH
+    mode: "0644"
+  tags: ["java", "configure"]
+
+- name: Install Jenkins agent dependencies
+  package:
+    name:
+      - git
+      - wget
+      - unzip
+    state: present
+  tags: ["java", "agent"]
+
+- name: Create Jenkins agent user
+  user:
+    name: java-node
+    comment: "Jenkins Agent User"
+    shell: /bin/bash
+    createhome: yes
+    home: /home/java-node
+  tags: ["java", "agent"]
+
+- name: Create Jenkins agent workspace directory
+  file:
+    path: /home/java-node/workspace
+    state: directory
+    owner: java-node
+    group: java-node
+    mode: "0755"
+  tags: ["java", "agent"]
+
+- name: Configure SSH for Jenkins agent
+  file:
+    path: /home/java-node/.ssh
+    state: directory
+    owner: java-node
+    group: java-node
+    mode: "0700"
+  tags: ["java", "agent", "ssh"]
+
+- name: Verify Java installation
+  command: java -version
+  register: java_version_output
+  changed_when: false
+  tags: ["java", "verify"]
+
+- name: Display Java version
+  debug:
+    msg: "{{ java_version_output.stderr_lines }}"
+  tags: ["java", "verify"]
+
+- name: Verify Maven installation
+  command: mvn -version
+  register: maven_version_output
+  changed_when: false
+  tags: ["java", "verify"]
+
+- name: Display Maven version
+  debug:
+    msg: "{{ maven_version_output.stdout_lines }}"
+  tags: ["java", "verify"]
