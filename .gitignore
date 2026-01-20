@@ -1,7 +1,7 @@
 ### Ansible
 playbooks/roles/java
 playbooks/roles/python
-playbooks/ansible.cfg
+
 
 ### Terraform
 .terraform
