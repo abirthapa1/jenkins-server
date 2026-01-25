@@ -36,7 +36,7 @@ This project is designed as a small but realistic CI/CD pipeline setup suitable 
 
 ### Steps
 
-#### Infrastructure provsisioning
+#### Infrastructure provisioning
 
 1. First git clone the reposistory
 2. Change directory to jenkins-server. ```cd jenkins-server```
@@ -50,8 +50,11 @@ terraform apply
 The three instances created after terraform apply
 <img width="1599" height="558" alt="image" src="https://github.com/user-attachments/assets/c0da7707-f56c-4e4f-9712-e9edb89e2051" />
 
-Getting the jenkins login page for the first time
-at http://<public-ip-addr-master-node>:8080
+#### Bootstrapping the instances
+1. Using ansible we bootstrap the instances with jenkins.
+2. We install jenkins in the master-node and install the other dependencies for the other nodes like python-node, we install python3-11 and for java-node we install java-21 with gradle and maven as well.
+3. Once bootsratpping is done we can access the jenkins page through ```http://<public-ip-addr-master-node>:8080```
+Getting the jenkins login page for the first time.
 <img width="1455" height="665" alt="image" src="https://github.com/user-attachments/assets/cbd8620d-7e5a-4dcd-8a29-e346c3c5fb15" />
 
 Once you login using admin password and create an user for yourself the homepage would look like this
