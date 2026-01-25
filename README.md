@@ -33,6 +33,20 @@ This project is designed as a small but realistic CI/CD pipeline setup suitable 
 - Jenkins Agents (Java & Python)
 - Declarative Jenkins Pipelines
 
+
+### Steps
+
+#### Infrastructure provsisioning
+
+1. First git clone the reposistory
+2. Change directory to jenkins-server. ```cd jenkins-server```
+3. Run the following commands:
+```
+terraform init
+terraform plan
+terraform apply
+
+```
 The three instances created after terraform apply
 <img width="1599" height="558" alt="image" src="https://github.com/user-attachments/assets/c0da7707-f56c-4e4f-9712-e9edb89e2051" />
 
