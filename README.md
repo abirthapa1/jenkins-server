@@ -45,8 +45,8 @@ This project is designed as a small but realistic CI/CD pipeline setup suitable 
 terraform init
 terraform plan
 terraform apply
-
 ```
+4. Once terraform finishes provisioning the infrastructure, you can see the 3 public ip addresses of the 3 instances created as terraform output.
 The three instances created after terraform apply
 <img width="1599" height="558" alt="image" src="https://github.com/user-attachments/assets/c0da7707-f56c-4e4f-9712-e9edb89e2051" />
 
