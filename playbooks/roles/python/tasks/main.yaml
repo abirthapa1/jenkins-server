@@ -1,0 +1,89 @@
+---
+# playbooks/roles/python/tasks/main.yml
+# - name: Include OS-specific variables
+#   include_vars: "{{ ansible_os_family }}.yml"
+#   tags: ["java"]
+
+- name: Update package cache
+  package:
+    update_cache: yes
+  tags: ["python"]
+
+- name: Install Python3
+  package:
+    name: python3
+    state: present
+  tags: ["python"]
+
+- name: Install Jenkins agent dependencies
+  package:
+    name:
+      - git
+      - wget
+      - unzip
+    state: present
+  tags: ["python", "agent"]
+
+- name: Create Jenkins agent user
+  user:
+    name: python-node
+    comment: "Jenkins Agent User"
+    shell: /bin/bash
+    createhome: yes
+    home: /home/python-node
+  tags: ["python", "agent"]
+
+- name: Create Jenkins agent workspace directory
+  file:
+    path: /home/python-node/workspace
+    state: directory
+    owner: python-node
+    group: python-node
+    mode: "0755"
+  tags: ["python", "agent"]
+
+- name: Configure SSH for Jenkins agent
+  file:
+    path: /home/python-node/.ssh
+    state: directory
+    owner: python-node
+    group: python-node
+    mode: "0700"
+  tags: ["python", "agent", "ssh"]
+
+- name: Verify Python3 installation
+  command: python3 --version
+  register: python3_version_output
+  changed_when: false
+  tags: ["python", "verify"]
+
+- name: Display Python version
+  debug:
+    msg: "{{ python3_version_output.stdout_lines }}"
+  tags: ["python", "verify"]
+# - name: Generate ED25519 SSH key pair
+#   community.crypto.openssh_keypair:
+#     name: python-node
+#     generate_ssh_key: yes
+#     ssh_key_type: ed25519
+#     path: /home/python-node/.ssh/id_ed25519
+#     ssh_key_passphrase: ""
+#     register: ssh_key_result
+
+# - name: Copy public key to authorized_keys
+#   copy:
+#     src: /home/python-node/.ssh/id_ed25519.pub
+#     dest: /home/python-node/.ssh/authorized_keys
+#     remote_src: yes
+#     owner: python-node
+#     group: python-node
+#     mode: "0700"
+
+# - name: Read and display private key
+#   slurp:
+#     src: /home/python-node/.ssh/id_ed25519
+#     register: private_key
+
+# - name: Display private key
+#   debug:
+#     msg: "{{ private_key['content'] | b64decode }}"
