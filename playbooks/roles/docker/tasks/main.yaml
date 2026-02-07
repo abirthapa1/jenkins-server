@@ -1,0 +1,26 @@
+### Installing docker on both the nodes
+- name: Updating the packages
+  package:
+    update_cache: yes
+  tags: ["docker"]
+
+- name: Installing docker
+  ansible.builtin.yum:
+    name: docker
+    state: latest
+
+  tags: ["docker"]
+
+- name: Starting docker service
+  service:
+    name: docker
+    state: started
+    enabled: yes
+  tags: ["docker"]
+
+- name: Adding the docker user to the ec2-user group
+  user:
+    name: ec2-user
+    comment: docker user
+    group: docker
+  tags: ["docker"]
