@@ -2,7 +2,7 @@
 
 ### 📌 Project Overview
 
-This project demonstrates how to provision and configure a Jenkins CI/CD environment using Infrastructure as Code (Terraform) and Configuration Management (Ansible).
+This project was created for my own benefit as I wanted my own controlled CI/CD. The infrastructure demonstrates how to provision and configure a Jenkins CI/CD environment using Infrastructure as Code (Terraform) and Configuration Management (Ansible).
 
 The setup includes:
 
@@ -14,11 +14,14 @@ Terraform modules are used to provision the infrastructure, and Ansible playbook
 
 This project is designed as a small but realistic CI/CD pipeline setup suitable for learning and to be configured more according to your needs!
 
+### Infrastructure Diagram
+<img width="4425" height="2580" alt="jenkins_infra" src="https://github.com/user-attachments/assets/238530b9-535c-4150-be95-c76fc4560d09" />
+
 ### 🧰 Tech Stack
 
 #### Infrastructure
 
-- AWS EC2
+- AWS EC2, IAM, Security groups, VPC
 - Terraform (Modules)
 - SSH key-based access
 
