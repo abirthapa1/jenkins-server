@@ -31,3 +31,23 @@
   roles:
     - role: python
       tags: ["python", "agent"]
+
+### Docker
+- name: Configure Docker on each node
+  hosts: [python_node, java_node]
+  become: true
+  # vars:
+  #   python_version: "3.11"
+
+  roles:
+    - role: docker
+      tags: ["docker"]
+
+### Retrieving the admin password
+- name: Final Summary
+  hosts: master_node
+  gather_facts: false
+  tasks:
+    - name: Show Jenkins initial admin password
+      debug:
+        msg: "Jenkins Admin Password: {{ jenkins_admin_password }}"

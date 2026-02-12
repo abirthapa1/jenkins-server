@@ -38,5 +38,6 @@
   register: jenkins_admin_password
 
 - name: Show Jenkins initial admin password
-  ansible.builtin.debug:
-    msg: "{{ jenkins_admin_password.content | b64decode | trim}}"
+  ansible.builtin.set_stats:
+    data:
+      jenkins_admin_password: "{{ jenkins_admin_password.content | b64decode | trim}}"
