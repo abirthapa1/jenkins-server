@@ -6,12 +6,14 @@ module "jenkins_server_sg" {
   name   = var.sg_name
   vpc_id = var.vpc_id
 
-  ingress_cidr_blocks = var.ingress_cidr_blocks
-  ingress_rules       = var.ingress_rules
+  # ingress_cidr_blocks = var.ingress_cidr_blocks
+  # ingress_rules       = var.ingress_rules
 
   ingress_with_cidr_blocks = var.ingress_with_cidr_blocks
+  egress_with_cidr_blocks  = var.egress_with_cidr_blocks
 
-  egress_with_cidr_blocks = var.egress_with_cidr_blocks
+  ingress_with_source_security_group_id = var.ingress_with_source_security_group_id
+  egress_with_source_security_group_id  = var.egress_with_source_security_group_id
 
   tags = var.sg_tags
 }
