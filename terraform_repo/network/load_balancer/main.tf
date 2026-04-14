@@ -1,4 +1,4 @@
-resource "aws_lb_target_group" "jenkins-target-grp" {
+resource "aws_lb_target_group" "jenkins_target_grp" {
   name     = var.target_group_name
   port     = var.target_group_port
   protocol = var.target_group_protocol
@@ -12,7 +12,7 @@ resource "aws_lb_target_group" "jenkins-target-grp" {
 
 }
 
-resource "aws_lb" "jenkins-alb" {
+resource "aws_lb" "jenkins_alb" {
   name               = var.alb_name
   internal           = var.scheme
   load_balancer_type = var.load_balancer_type
@@ -33,9 +33,9 @@ resource "aws_lb" "jenkins-alb" {
 }
 
 # resource "aws_lb_target_group_attachment" "test" {
-#   target_group_arn = aws_lb_target_group.test.arn
-#   target_id        = "i-098dee07efca3af75"
-#   port             = 80
+#   target_group_arn = aws_lb_target_group.jenkins_target_grp.arn
+#   # target_id        = module.ec2-instance.ec2_instance_id
+#   port = 80
 # }
 
 # resource "aws_lb_listener" "front_end" {
